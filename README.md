@@ -1,6 +1,8 @@
 [![License](https://img.shields.io/github/license/s0rg/trie)](https://github.com/s0rg/trie/blob/main/LICENSE)
 [![Build](https://github.com/s0rg/trie/workflows/ci/badge.svg)](https://github.com/s0rg/trie/actions?query=workflow%3Aci)
 [![Go Report Card](https://goreportcard.com/badge/github.com/s0rg/trie)](https://goreportcard.com/report/github.com/s0rg/trie)
+[![Maintainability](https://api.codeclimate.com/v1/badges/b476ce7fd7bbaa30e5a6/maintainability)](https://codeclimate.com/github/s0rg/trie/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/b476ce7fd7bbaa30e5a6/test_coverage)](https://codeclimate.com/github/s0rg/trie/test_coverage)
 
 [![PkgGoDev](https://pkg.go.dev/badge/github.com/s0rg/trie)](https://pkg.go.dev/github.com/s0rg/trie)
 [![Go Version](https://img.shields.io/github/go-mod/go-version/s0rg/trie)](go.mod)
