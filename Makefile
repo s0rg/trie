@@ -14,5 +14,8 @@ test: vet
 test-cover: test
 	@- go tool cover -func="$(COP)"
 
+fuzz:
+	@- go test -fuzz=Fuzz -fuzztime 1m
+
 clean:
 	@- rm -f "$(COP)"

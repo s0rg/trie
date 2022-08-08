@@ -29,11 +29,11 @@ func TestTrieFind(t *testing.T) {
 
 	var (
 		val int
-		err error
+		ok  bool
 	)
 
 	for _, c := range cases {
-		if val, err = tr.Find(c.Path); err != nil {
+		if val, ok = tr.Find(c.Path); !ok {
 			t.Fatalf("not found: '%s'", c.Path)
 		}
 
@@ -45,7 +45,7 @@ func TestTrieFind(t *testing.T) {
 	nonexistent := []string{"ba", "bo", "band", "fan"}
 
 	for _, c := range nonexistent {
-		if _, err = tr.Find(c); err == nil {
+		if _, ok = tr.Find(c); ok {
 			t.Fatalf("found non-existent: '%s'", c)
 		}
 	}
@@ -71,34 +71,34 @@ func TestTrieDel(t *testing.T) {
 
 	var (
 		val int
-		err error
+		ok  bool
 	)
 
-	if _, err = tr.Find(kbar); err != nil {
+	if _, ok = tr.Find(kbar); !ok {
 		t.Fatal("'bar' not found")
 	}
 
-	if _, err = tr.Find(kbark); err != nil {
+	if _, ok = tr.Find(kbark); !ok {
 		t.Fatalf("'bark' not found")
 	}
 
-	if err = tr.Del(kbar); err != nil {
-		t.Fatalf("cannot delete 'bar': %v", err)
+	if ok = tr.Del(kbar); !ok {
+		t.Fatal("cannot delete 'bar'")
 	}
 
-	if err = tr.Del(kfoo); err != nil {
-		t.Fatalf("cannot delete 'foobar': %v", err)
+	if ok = tr.Del(kfoo); !ok {
+		t.Fatal("cannot delete 'foobar'")
 	}
 
-	if err = tr.Del(kfoo); err == nil {
+	if ok = tr.Del(kfoo); ok {
 		t.Fatal("double delete 'foobar'")
 	}
 
-	if _, err = tr.Find(kbar); err == nil {
+	if _, ok = tr.Find(kbar); ok {
 		t.Fatal("'bar' found")
 	}
 
-	if val, err = tr.Find(kbark); err != nil {
+	if val, ok = tr.Find(kbark); !ok {
 		t.Fatalf("'bark' not found")
 	}
 
@@ -124,4 +124,78 @@ func TestTrieString(t *testing.T) {
 	if got := strings.Count(res, "key"); got != wantKeys {
 		t.Fatalf("unexpected keys count want: %d got: %d", wantKeys, got)
 	}
+}
+
+func TestTrieSuggest(t *testing.T) {
+	t.Parallel()
+
+	tr := New[int]()
+
+	tr.Add("arc", 1)
+	tr.Add("bak", 2)
+	tr.Add("bar", 3)
+	tr.Add("boo", 4)
+
+	var (
+		res []string
+		ok  bool
+	)
+
+	if _, ok = tr.Suggest("c"); ok {
+		t.Fatal("suggested c")
+	}
+
+	if res, ok = tr.Suggest("a"); !ok {
+		t.Fatal("not found a")
+	}
+
+	if len(res) != 1 {
+		t.Fatal("suggest(a) != 1")
+	}
+
+	if res, ok = tr.Suggest("b"); !ok {
+		t.Fatal("not found b")
+	}
+
+	if len(res) != 3 {
+		t.Fatal("suggest(b) != 3")
+	}
+
+	if res, ok = tr.Suggest("ba"); !ok {
+		t.Fatal("not found ba")
+	}
+
+	if len(res) != 2 {
+		t.Fatal("suggest(ba) != 2")
+	}
+
+	if res, ok = tr.Suggest("bak"); !ok {
+		t.Fatal("not found bak")
+	}
+
+	if len(res) != 1 {
+		t.Fatal("suggest(bak) != 1")
+	}
+}
+
+func FuzzTrie(f *testing.F) {
+	f.Add("foo:F,bar:B")
+
+	f.Fuzz(func(t *testing.T, input string) {
+		input = strings.ToValidUTF8(input, "")
+		tr := New[string]()
+		m := make(map[string]string)
+
+		for _, p := range strings.Split(input, ",") {
+			key, val, _ := strings.Cut(p, ":")
+			m[key] = val
+			tr.Add(key, val)
+		}
+
+		for k, v := range m {
+			if got, ok := tr.Find(k); !ok || got != v {
+				t.Errorf("key %q, want %q, got %q", k, v, got)
+			}
+		}
+	})
 }
