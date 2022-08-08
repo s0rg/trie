@@ -4,7 +4,6 @@ linters:
     - nonamedreturns
     - testpackage
     - varnamelen
-    - typecheck
     - ireturn
   fast: false
 
