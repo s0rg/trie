@@ -28,9 +28,9 @@ Generic prefix tree for golang
     t.Add("baz", 2)
     t.Add("bat", 3)
 
-    val, err := t.Find("bar")
-    if err != nil {
-        log.Fatal(err)
+    val, ok := t.Find("bar")
+    if !ok {
+        log.Fatal("not found")
     }
 
     fmt.Println(val) // will print 1
