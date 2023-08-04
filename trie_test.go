@@ -1,14 +1,16 @@
-package trie
+package trie_test
 
 import (
 	"strings"
 	"testing"
+
+	"github.com/s0rg/trie"
 )
 
 func TestTrieFind(t *testing.T) {
 	t.Parallel()
 
-	tr := New[int]()
+	tr := trie.New[int]()
 
 	type testCase struct {
 		Path string
@@ -54,7 +56,7 @@ func TestTrieFind(t *testing.T) {
 func TestTrieDel(t *testing.T) {
 	t.Parallel()
 
-	tr := New[int]()
+	tr := trie.New[int]()
 
 	const (
 		kbar  = "bar"
@@ -110,7 +112,7 @@ func TestTrieDel(t *testing.T) {
 func TestTrieString(t *testing.T) {
 	t.Parallel()
 
-	tr := New[int]()
+	tr := trie.New[int]()
 
 	tr.Add("cup", 1)
 	tr.Add("cub", 2)
@@ -129,7 +131,7 @@ func TestTrieString(t *testing.T) {
 func TestTrieSuggest(t *testing.T) {
 	t.Parallel()
 
-	tr := New[int]()
+	tr := trie.New[int]()
 
 	tr.Add("arc", 1)
 	tr.Add("bak", 2)
@@ -183,7 +185,7 @@ func FuzzTrie(f *testing.F) {
 
 	f.Fuzz(func(t *testing.T, input string) {
 		input = strings.ToValidUTF8(input, "")
-		tr := New[string]()
+		tr := trie.New[string]()
 		m := make(map[string]string)
 
 		for _, p := range strings.Split(input, ",") {
