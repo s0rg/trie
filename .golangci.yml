@@ -2,8 +2,9 @@ linters:
   enable-all: true
   disable:
     - nonamedreturns
-    - testpackage
+    - structcheck
     - varnamelen
+    - depguard
     - ireturn
   fast: false
 
