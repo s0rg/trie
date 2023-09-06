@@ -100,7 +100,6 @@ func (t *Trie[T]) Suggest(prefix string) (rv []string, ok bool) {
 // Iter iterates over trie by prefix using dfs.
 // Pass prefix="" to iterate over whole trie.
 func (t *Trie[T]) Iter(prefix string, walker func(key string, value T)) {
-	var n *node[T]
 	n, ok := t.find(prefix)
 	if !ok {
 		return

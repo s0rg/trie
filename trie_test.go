@@ -149,15 +149,16 @@ func TestTrieWalk(t *testing.T) {
 	if result["bak"] != 2 {
 		t.Fatal("key not found")
 	}
+
 	if result["bar"] != 3 {
 		t.Fatal("key not found")
 	}
+
 	if result["boo"] != 4 {
 		t.Fatal("key not found")
 	}
 
-	_, ok := result["arc"]
-	if ok {
+	if _, ok := result["arc"]; ok {
 		t.Fatal("key found, but don't need to exists")
 	}
 }
