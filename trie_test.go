@@ -128,6 +128,40 @@ func TestTrieString(t *testing.T) {
 	}
 }
 
+func TestTrieWalk(t *testing.T) {
+	t.Parallel()
+
+	result := make(map[string]int, 10)
+
+	walker := func(key string, value int) {
+		result[key] = value
+	}
+
+	tr := trie.New[int]()
+
+	tr.Add("arc", 1)
+	tr.Add("bak", 2)
+	tr.Add("bar", 3)
+	tr.Add("boo", 4)
+
+	tr.Iter("b", walker)
+
+	if result["bak"] != 2 {
+		t.Fatal("key not found")
+	}
+	if result["bar"] != 3 {
+		t.Fatal("key not found")
+	}
+	if result["boo"] != 4 {
+		t.Fatal("key not found")
+	}
+
+	_, ok := result["arc"]
+	if ok {
+		t.Fatal("key found, but don't need to exists")
+	}
+}
+
 func TestTrieSuggest(t *testing.T) {
 	t.Parallel()
 

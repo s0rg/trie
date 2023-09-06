@@ -54,7 +54,7 @@ func (n *node[T]) DelChild(r rune) {
 	}
 }
 
-func (n *node[T]) HasChilds() (ok bool) {
+func (n *node[T]) HasChildren() (ok bool) {
 	return len(n.childs) > 0
 }
 

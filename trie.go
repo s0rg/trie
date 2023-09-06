@@ -65,7 +65,7 @@ func (t *Trie[T]) Del(key string) (ok bool) {
 			n.DropValue()
 		}
 
-		if n.HasChilds() {
+		if n.HasChildren() {
 			break
 		}
 
@@ -88,23 +88,29 @@ func (t *Trie[T]) Find(key string) (value T, ok bool) {
 
 // Suggest returns slice of existing keys with matching prefix.
 func (t *Trie[T]) Suggest(prefix string) (rv []string, ok bool) {
-	var n *node[T]
-
-	if n, ok = t.find(prefix); !ok {
-		return
-	}
-
-	add := func(v string) {
+	add := func(v string, _ T) {
 		rv = append(rv, v)
 	}
 
-	if n.HasValue() {
-		add(prefix)
-	}
-
-	dfsKeys(n, prefix, add)
+	t.Iter(prefix, add)
 
 	return rv, len(rv) > 0
+}
+
+// Iter iterates over trie by prefix using dfs.
+// Pass prefix="" to iterate over whole trie.
+func (t *Trie[T]) Iter(prefix string, walker func(key string, value T)) {
+	var n *node[T]
+	n, ok := t.find(prefix)
+	if !ok {
+		return
+	}
+
+	if n.HasValue() {
+		walker(prefix, n.value)
+	}
+
+	dfsKeys(n, prefix, walker)
 }
 
 // String implements fmt.Stringer interface.
@@ -129,14 +135,14 @@ func writeNode[T any](
 
 	switch {
 	case n.HasValue():
-		fmt.Fprintf(w, template+" value: '%v'", n.key, n.Value())
+		_, _ = fmt.Fprintf(w, template+" value: '%v'", n.key, n.Value())
 	case n.key == rootNode:
-		fmt.Fprint(w, "root")
+		_, _ = fmt.Fprint(w, "root")
 	default:
-		fmt.Fprintf(w, template+":", n.key)
+		_, _ = fmt.Fprintf(w, template+":", n.key)
 	}
 
-	fmt.Fprintln(w)
+	_, _ = fmt.Fprintln(w)
 
 	for _, c := range n.childs {
 		writeNode(w, c, level+1)
@@ -146,13 +152,13 @@ func writeNode[T any](
 func dfsKeys[T any](
 	n *node[T],
 	prefix string,
-	handler func(string),
+	handler func(key string, value T),
 ) {
 	for r, c := range n.childs {
 		key := prefix + string(r)
 
 		if c.HasValue() {
-			handler(key)
+			handler(key, c.value)
 		}
 
 		dfsKeys(c, key, handler)
