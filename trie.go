@@ -60,6 +60,9 @@ func (t *Trie[T]) Del(key string) (ok bool) {
 
 	for ; n != nil; n = p {
 		p = n.Parent()
+		if p == nil {
+			break
+		}
 
 		if n.HasValue() {
 			n.DropValue()
