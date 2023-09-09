@@ -109,6 +109,41 @@ func TestTrieDel(t *testing.T) {
 	}
 }
 
+func TestTrieDelAll(t *testing.T) {
+	t.Parallel()
+
+	tr := trie.New[int]()
+
+	tests := []struct {
+		k string
+		v int
+	}{
+		{"bar", 1},
+		{"baz", 2},
+		{"boo", 5},
+		{"foobar", 5},
+		{"bark", 3},
+	}
+
+	for _, t := range tests {
+		tr.Add(t.k, t.v)
+	}
+
+	for _, test := range tests {
+		if _, ok := tr.Find(test.k); !ok {
+			t.Fatalf("'%s' not found", test.k)
+		}
+
+		if ok := tr.Del(test.k); !ok {
+			t.Fatalf("cannot delete '%s'", test.k)
+		}
+
+		if _, ok := tr.Find(test.k); ok {
+			t.Fatalf("'%s' found", test.k)
+		}
+	}
+}
+
 func TestTrieString(t *testing.T) {
 	t.Parallel()
 
