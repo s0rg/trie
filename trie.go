@@ -2,8 +2,10 @@ package trie
 
 import (
 	"bytes"
+	"cmp"
 	"fmt"
 	"io"
+	"slices"
 	"strings"
 )
 
@@ -112,7 +114,42 @@ func (t *Trie[T]) Iter(prefix string, walker func(key string, value T)) {
 		walker(prefix, n.value)
 	}
 
-	dfsKeys(n, prefix, walker)
+	dfsValues(n, prefix, walker)
+}
+
+// Common returns slice of common keys with at least `minLength` of their length
+// Pass prefix="" to find all commons whithin given length
+// Resulting slice is sorted by overall matching keys count, key with most goes first.
+func (t *Trie[T]) Common(prefix string, minLength int) (rv []string) {
+	n, ok := t.find(prefix)
+	if !ok {
+		return
+	}
+
+	minLength -= len(prefix)
+
+	dfsKeys(n, prefix, func(k string, n *node[T]) bool {
+		if len(k) < minLength {
+			return true
+		}
+
+		if n.HasValue() || len(n.childs) > 1 {
+			rv = append(rv, k)
+
+			return false
+		}
+
+		return true
+	})
+
+	slices.SortStableFunc(rv, func(a, b string) int {
+		sa, _ := t.Suggest(a)
+		sb, _ := t.Suggest(b)
+
+		return cmp.Compare(len(sb), len(sa))
+	})
+
+	return rv
 }
 
 // String implements fmt.Stringer interface.
@@ -151,7 +188,7 @@ func writeNode[T any](
 	}
 }
 
-func dfsKeys[T any](
+func dfsValues[T any](
 	n *node[T],
 	prefix string,
 	handler func(key string, value T),
@@ -161,6 +198,22 @@ func dfsKeys[T any](
 
 		if c.HasValue() {
 			handler(key, c.value)
+		}
+
+		dfsValues(c, key, handler)
+	}
+}
+
+func dfsKeys[T any](
+	n *node[T],
+	prefix string,
+	handler func(string, *node[T]) bool,
+) {
+	for r, c := range n.childs {
+		key := prefix + string(r)
+
+		if !handler(key, c) {
+			return
 		}
 
 		dfsKeys(c, key, handler)

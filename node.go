@@ -20,7 +20,8 @@ func (n *node[T]) SetValue(val T) {
 }
 
 func (n *node[T]) DropValue() {
-	n.ok = false
+	var zero T
+	n.value, n.ok = zero, false
 }
 
 func (n *node[T]) HasValue() (ok bool) {

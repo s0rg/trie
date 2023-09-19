@@ -1,6 +1,7 @@
 package trie_test
 
 import (
+	"slices"
 	"strings"
 	"testing"
 
@@ -247,6 +248,40 @@ func TestTrieSuggest(t *testing.T) {
 
 	if len(res) != 1 {
 		t.Fatal("suggest(bak) != 1")
+	}
+}
+
+func TestTrieCommons(t *testing.T) {
+	t.Parallel()
+
+	tr := trie.New[int]()
+
+	if res := tr.Common("foo", 3); len(res) > 0 {
+		t.FailNow()
+	}
+
+	tr.Add("foo", 1)
+	tr.Add("food", 2)
+	tr.Add("car", 3)
+	tr.Add("carpet", 4)
+	tr.Add("cart", 5)
+	tr.Add("cartridge", 9)
+	tr.Add("probe", 10)
+	tr.Add("problem", 11)
+	tr.Add("probability", 12)
+
+	want := []string{
+		"car",
+		"prob",
+		"foo",
+	}
+
+	if res := tr.Common("", 3); slices.Compare(res, want) != 0 {
+		t.Fail()
+	}
+
+	if res := tr.Common("ca", 3); len(res) != 1 || res[0] != "car" {
+		t.Fail()
 	}
 }
 
