@@ -1,7 +1,10 @@
 package trie
 
+import "slices"
+
 type node[T any] struct {
 	childs map[rune]*node[T]
+	order  []rune
 	parent *node[T]
 	value  T
 	ok     bool
@@ -37,6 +40,8 @@ func (n *node[T]) AddChild(r rune) (rv *node[T]) {
 
 	rv.parent = n
 	n.childs[r] = rv
+	n.order = append(n.order, r)
+	slices.Sort(n.order)
 
 	return rv
 }

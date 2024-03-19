@@ -18,7 +18,9 @@ type Trie[T any] struct {
 
 // New creates empty Trie.
 func New[T any]() *Trie[T] {
-	return &Trie[T]{root: makeNode[T](rootNode)}
+	return &Trie[T]{
+		root: makeNode[T](rootNode),
+	}
 }
 
 // Add inserts new key/value pair.
@@ -61,8 +63,7 @@ func (t *Trie[T]) Del(key string) (ok bool) {
 	}
 
 	for ; n != nil; n = p {
-		p = n.Parent()
-		if p == nil {
+		if p = n.Parent(); p == nil {
 			break
 		}
 
@@ -142,7 +143,7 @@ func (t *Trie[T]) Common(prefix string, minLength int) (rv []string) {
 		return true
 	})
 
-	slices.SortStableFunc(rv, func(a, b string) int {
+	slices.SortFunc(rv, func(a, b string) int {
 		sa, _ := t.Suggest(a)
 		sb, _ := t.Suggest(b)
 
@@ -193,7 +194,9 @@ func dfsValues[T any](
 	prefix string,
 	handler func(key string, value T),
 ) {
-	for r, c := range n.childs {
+	for _, r := range n.order {
+		c := n.childs[r]
+
 		key := prefix + string(r)
 
 		if c.HasValue() {
@@ -209,7 +212,9 @@ func dfsKeys[T any](
 	prefix string,
 	handler func(string, *node[T]) bool,
 ) {
-	for r, c := range n.childs {
+	for _, r := range n.order {
+		c := n.childs[r]
+
 		key := prefix + string(r)
 
 		if !handler(key, c) {
