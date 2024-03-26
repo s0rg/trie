@@ -285,6 +285,26 @@ func TestTrieCommons(t *testing.T) {
 	}
 }
 
+func TestTrieCommons1(t *testing.T) {
+	t.Parallel()
+
+	tr := trie.New[int]()
+
+	tr.Add("a1", 1)
+	tr.Add("a2", 2)
+	tr.Add("a3", 3)
+	tr.Add("b1", 4)
+	tr.Add("b2", 5)
+	tr.Add("b3", 9)
+	tr.Add("c1", 10)
+	tr.Add("c2", 11)
+	tr.Add("c3", 12)
+
+	if res := tr.Common("", 1); len(res) != 3 {
+		t.Fail()
+	}
+}
+
 func FuzzTrie(f *testing.F) {
 	f.Add("foo:F,bar:B")
 
