@@ -56,7 +56,7 @@ func (n *node[T]) DelChild(r rune) {
 	if c, ok := n.childs[r]; ok {
 		delete(n.childs, r)
 
-		idx := slices.Index(n.order, r)
+		idx, _ := slices.BinarySearch(n.order, r)
 		n.order = slices.Delete(n.order, idx, idx+1)
 
 		c.parent = nil

@@ -218,7 +218,7 @@ func dfsKeys[T any](
 		key := prefix + string(r)
 
 		if !handler(key, c) {
-			return
+			continue
 		}
 
 		dfsKeys(c, key, handler)
