@@ -1,3 +1,3 @@
 module github.com/s0rg/trie
 
-go 1.22
+go 1.24

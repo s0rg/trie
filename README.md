@@ -4,10 +4,9 @@
 [![Tag](https://img.shields.io/github/v/tag/s0rg/trie?sort=semver)](https://github.com/s0rg/trie/tags)
 
 [![CI](https://github.com/s0rg/trie/workflows/ci/badge.svg)](https://github.com/s0rg/trie/actions?query=workflow%3Aci)
+[![Maintainability](https://qlty.sh/badges/be6e541c-b180-457b-9088-300cb5588718/maintainability.svg)](https://qlty.sh/gh/s0rg/projects/trie)
+[![Code Coverage](https://qlty.sh/badges/be6e541c-b180-457b-9088-300cb5588718/test_coverage.svg)](https://qlty.sh/gh/s0rg/projects/trie)
 [![Go Report Card](https://goreportcard.com/badge/github.com/s0rg/trie)](https://goreportcard.com/report/github.com/s0rg/trie)
-[![Maintainability](https://api.codeclimate.com/v1/badges/b476ce7fd7bbaa30e5a6/maintainability)](https://codeclimate.com/github/s0rg/trie/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/b476ce7fd7bbaa30e5a6/test_coverage)](https://codeclimate.com/github/s0rg/trie/test_coverage)
-
 
 # trie
 
